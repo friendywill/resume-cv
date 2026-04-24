@@ -19,7 +19,7 @@ The stack is:
 - **Database ORM**: Drizzle ORM
 - **Database**: Postgres (hosted using Neon)
 - **Deployment**: Serverless (Vercel)
-- **Build Tool**: Bun
+- **Development Tools**: Bun, Tailwind, Biome, and Vite
 - **Language**: TypeScript throughout (strict mode), no js files allowed.
 
 The app is intentionally minimal — it is a public-facing CV, not a
