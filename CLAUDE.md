@@ -32,7 +32,7 @@ complexity.
 
 ```
 .
-├── app/
+├── src/
 │   ├── routes/              # TanStack Start file-based routes
 │   │   ├── __root.tsx       # Root layout (fonts, global meta, providers)
 │   │   ├── index.tsx        # CV landing page
@@ -50,8 +50,13 @@ complexity.
 │   ├── styles/
 │   │   └── global.css       # Global styles and CSS custom properties
 │   └── types/               # Shared TypeScript types and Zod schemas
+├── public/                  # Public assets
 ├── drizzle.config.ts
+├── biome.json               # Linter config
+├── vite.config.json         # Build tool
 ├── app.config.ts            # TanStack Start / Vite config
+├── tsconfig.json
+├── index.html
 └── package.json
 ```
 
