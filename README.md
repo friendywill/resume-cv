@@ -1,5 +1,9 @@
 # Resume / CV William Friend
 
+## TODO
+
+  - [ ] Add PDF generator
+
 ## Getting Started
 
 ```bash
