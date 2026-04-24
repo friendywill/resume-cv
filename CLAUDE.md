@@ -7,16 +7,22 @@ repository.
 
 ## Repository Purpose
 
-This repository contains a personal CV/resume published as a full-stack web
-application. The stack is:
+This repository contains a personal CV published as a full-stack web
+application.
+The resume is stored as a markdown file, this markdown file is hosted on the
+full-stack web application, and can be exported to a PDF format using a
+markdown to PDF exporter. The exporter runs only when a build occurs, with the
+PDF cached into the build.
+The stack is:
 
 - **Framework**: TanStack Start (full-stack, file-based routing)
 - **Database ORM**: Drizzle ORM
-- **Database**: Postgres (hosted, e.g. Neon / Supabase)
-- **Deployment**: Serverless (Vercel or Netlify)
-- **Language**: TypeScript throughout (strict mode)
+- **Database**: Postgres (hosted using Neon)
+- **Deployment**: Serverless (Vercel)
+- **Build Tool**: Bun
+- **Language**: TypeScript throughout (strict mode), no js files allowed.
 
-The app is intentionally minimal — it is a public-facing resume, not a
+The app is intentionally minimal — it is a public-facing CV, not a
 product. Optimise for readability and load performance over engineering
 complexity.
 
@@ -66,8 +72,8 @@ Rules:
   declaration merging or class contracts.
 - No `any`. Use `unknown` and narrow explicitly. If a third-party type gap
   forces it, suppress with a comment explaining why.
-- Avoid type assertions (`as Foo`) except at library/API boundaries. Prefer
-  runtime validation with Zod.
+- Avoid type assertions (`as Foo`) except at library/API boundaries. Highly
+  prioritize runtime validation with Zod.
 - Export types from `app/types/`. Do not co-locate type-only files with
   implementation files.
 
@@ -221,9 +227,9 @@ the user/caller needs?" not "does this call this internal function?"
 
 ### Commands
 ```bash
-pnpm test          # run unit + component tests (watch mode)
-pnpm test:run      # single run (CI)
-pnpm test:coverage # coverage report
+bun test          # run unit + component tests (watch mode)
+bun test:run      # single run (CI)
+bun test:coverage # coverage report
 ```
 
 ---
