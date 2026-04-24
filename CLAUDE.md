@@ -41,11 +41,13 @@ complexity.
 │   │   ├── ui/              # Primitive/generic components (Button, Card…)
 │   │   └── cv/              # CV-specific components (ExperienceItem…)
 │   ├── db/
-│   │   ├── schema.ts        # Drizzle table definitions (single source of truth)
+│   │   ├── schema.ts        # Drizzle table definitions (single source of
+│   │   │                    # truth)
 │   │   ├── index.ts         # DB client instantiation
 │   │   └── migrations/      # Drizzle-generated migration files (do not edit)
 │   ├── lib/
-│   │   ├── queries.ts       # Typed DB query functions (no raw SQL outside here)
+│   │   ├── queries.ts       # Typed DB query functions (no raw SQL outside
+│   │   │                    # here)
 │   │   └── utils.ts         # Pure utility functions (no side effects)
 │   ├── styles/
 │   │   └── global.css       # Global styles and CSS custom properties
@@ -61,6 +63,7 @@ complexity.
 ```
 
 Rules:
+
 - Route files own **only** routing logic and data loading (`loader`/`action`).
   Business logic belongs in `lib/`, UI in `components/`.
 - Never import from `app/routes/` in any other module.
@@ -72,6 +75,7 @@ Rules:
 ## Coding Standards
 
 ### TypeScript
+
 - `strict: true` in `tsconfig.json` — no exceptions.
 - Prefer `type` over `interface` for object shapes. Use `interface` only for
   declaration merging or class contracts.
@@ -83,6 +87,7 @@ Rules:
   implementation files.
 
 ### General
+
 - Soft 80-column limit. Exceptions: import paths, URLs, generated code.
 - Use the formatter's canonical style — Prettier with project defaults.
 - No `console.log` in committed code. Use a logger abstraction or
@@ -95,14 +100,17 @@ Rules:
 ## Data Layer (Drizzle + Postgres)
 
 ### Schema (`app/db/schema.ts`)
+
 - All table definitions live here — nowhere else.
 - Use `pgTable` from `drizzle-orm/pg-core`.
 - Every table must have a `createdAt` and `updatedAt` column with DB-level
   defaults:
+
   ```ts
   createdAt: timestamp('created_at').defaultNow().notNull(),
   updatedAt: timestamp('updated_at').defaultNow().notNull(),
   ```
+
 - Prefer `text` over `varchar` for variable-length strings unless you need
   a DB-enforced length constraint.
 - Use `uuid` primary keys (`gen_random_uuid()`) for all tables, not serial
@@ -110,6 +118,7 @@ Rules:
 - Every column must be `.notNull()` unless null is a meaningful business state.
 
 ### Queries (`app/lib/queries.ts`)
+
 - All DB access goes through typed functions in this file. Route loaders call
   these functions, they do not build queries inline.
 - Queries must return fully typed results — infer return types from Drizzle's
@@ -119,12 +128,14 @@ Rules:
 - Avoid N+1 queries. Use `with` (CTEs) or joined selects instead of loops.
 
 ### Migrations
+
 - Generate migrations with `drizzle-kit generate`. Never edit generated files.
 - Run `drizzle-kit migrate` (not `push`) against all environments, including
   local.
 - Migration files are committed to source control.
 
 ### Connection
+
 - Instantiate the DB client once in `app/db/index.ts`.
 - On serverless, use a connection-pooling-compatible driver (e.g.
   `@neondatabase/serverless` or `postgres` with `?pgbouncer=true`).
@@ -149,6 +160,7 @@ Rules:
 ## UI Components
 
 ### File conventions
+
 - One component per file. Filename matches the exported component name in
   PascalCase.
 - Co-locate a `ComponentName.test.tsx` file when the component has non-trivial
@@ -156,6 +168,7 @@ Rules:
 - Props interfaces are defined in the same file, directly above the component.
 
 ### Patterns
+
 - Prefer functional components. No class components.
 - Use `React.memo` only with a measurable performance justification — not
   pre-emptively.
@@ -167,6 +180,7 @@ Rules:
   fetch inside `useEffect` for data that belongs in the route loader.
 
 ### Styling
+
 - CSS Modules (`.module.css`) for component-scoped styles, imported as
   `styles`.
 - Global design tokens (colours, spacing, typography scale) in
@@ -179,6 +193,7 @@ Rules:
   token definitions. Do not use JS-toggled class-based dark mode.
 
 ### Accessibility
+
 - All interactive elements must be keyboard-navigable and have accessible
   names.
 - Images require meaningful `alt` text; decorative images use `alt=""`.
@@ -205,16 +220,19 @@ Rules:
 ## Testing
 
 ### Philosophy
+
 Test behaviour, not implementation. A test should answer: "does this do what
 the user/caller needs?" not "does this call this internal function?"
 
 ### Unit tests (`*.test.ts` / `*.test.tsx`)
+
 - Framework: Vitest.
 - Cover: all functions in `app/lib/`, all non-trivial utilities, Zod schemas.
 - Do not test Drizzle schema definitions directly.
 - Use `vi.mock` sparingly — prefer dependency injection over module mocking.
 
 ### Component tests (`*.test.tsx`)
+
 - Framework: Vitest + Testing Library (`@testing-library/react`).
 - Cover: components with conditional rendering, form validation, user
   interaction logic.
@@ -222,15 +240,18 @@ the user/caller needs?" not "does this call this internal function?"
   `data-testid` only as a last resort.
 
 ### Integration / route tests
+
 - Test DB query functions against a real Postgres instance (use a separate
   `test` database or Vitest's setup/teardown hooks to seed and clean data).
 - Do not mock the DB in integration tests.
 
 ### Coverage
+
 - Aim for ≥80% line coverage on `app/lib/`. Do not chase 100% — untested
   trivial getters are not a problem.
 
 ### Commands
+
 ```bash
 bun test          # run unit + component tests (watch mode)
 bun test:run      # single run (CI)
@@ -250,6 +271,7 @@ bun test:coverage # coverage report
   client-side, and document the exposure explicitly.
 
 Required variables:
+
 ```
 DATABASE_URL=        # Postgres connection string (with pooler on serverless)
 ```
@@ -270,15 +292,103 @@ DATABASE_URL=        # Postgres connection string (with pooler on serverless)
 
 ## Commit Style
 
-Conventional Commits (`feat:`, `fix:`, `docs:`, `chore:`, `refactor:`,
-`test:`, `perf:`). Atomic commits scoped to a single logical change.
+Follow the conventional commits guide:
 
-Examples:
+The Conventional Commits specification is a lightweight convention on top of
+commit messages. It provides an easy set of rules for creating an explicit
+commit history; which makes it easier to write automated tools on top of. This
+convention dovetails with SemVer, by describing the features, fixes, and
+breaking changes made in commit messages.
+
+The commit message should be structured as follows:
+
 ```
-feat: add experience section with DB-backed entries
-fix: correct null handling in getExperience query
-chore: run drizzle-kit generate after schema change
-test: add unit tests for formatDateRange utility
+<type>[optional scope]: <description>
+
+[optional body]
+
+[optional footer(s)]
+```
+
+The commit contains the following structural elements, to communicate intent to
+the consumers of your library:
+
+- fix: a commit of the type fix patches a bug in your codebase (this
+  correlates with PATCH in Semantic Versioning).
+- feat: a commit of the type feat introduces a new feature to the codebase
+  (this correlates with MINOR in Semantic Versioning).
+- BREAKING CHANGE: a commit that has a footer BREAKING CHANGE:, or appends a
+  ! after the type/scope, introduces a breaking API change (correlating with
+  MAJOR in Semantic Versioning). A BREAKING CHANGE can be part of commits of
+  any type.
+- types other than fix: and feat: are allowed, for example
+  @commitlint/config-conventional (based on the Angular convention) recommends
+  build:, chore:, ci:, docs:, style:, refactor:, perf:, test:, and others.
+- footers other than BREAKING CHANGE: <description> may be provided and
+  follow a convention similar to git trailer format.
+
+Additional types are not mandated by the Conventional Commits specification,
+and have no implicit effect in Semantic Versioning (unless they include a
+BREAKING CHANGE). A scope may be provided to a commit’s type, to provide
+additional contextual information and is contained within parenthesis, e.g.,
+feat(parser): add ability to parse arrays.
+
+## Examples
+
+Commit message with description and breaking change footer
+
+```
+feat: allow provided config object to extend other configs
+
+BREAKING CHANGE: `extends` key in config file is now used for extending other
+config files
+```
+
+Commit message with ! to draw attention to breaking change
+
+```
+feat!: send an email to the customer when a product is shipped
+```
+
+Commit message with scope and ! to draw attention to breaking change
+
+```
+feat(api)!: send an email to the customer when a product is shipped
+```
+
+Commit message with both ! and BREAKING CHANGE footer
+
+```
+feat!: drop support for Node 6
+
+BREAKING CHANGE: use JavaScript features not available in Node 6.
+```
+
+Commit message with no body
+
+```
+docs: correct spelling of CHANGELOG
+```
+
+Commit message with scope
+
+```
+feat(lang): add Polish language
+```
+
+Commit message with multi-paragraph body and multiple footers
+
+```
+fix: prevent racing of requests
+
+Introduce a request id and a reference to latest request. Dismiss
+incoming responses other than from latest request.
+
+Remove timeouts which were used to mitigate the racing issue but are
+obsolete now.
+
+Reviewed-by: Z
+Refs: #123
 ```
 
 Specification
@@ -287,51 +397,52 @@ The key words “MUST”, “MUST NOT”, “REQUIRED”, “SHALL”, “SHALL 
 “SHOULD NOT”, “RECOMMENDED”, “MAY”, and “OPTIONAL” in this document are to be
 interpreted as described in RFC 2119.
 
-  1. Commits MUST be prefixed with a type, which consists of a noun, feat, fix,
-     etc., followed by the OPTIONAL scope, OPTIONAL !, and REQUIRED terminal
-     colon and space.
-  2. The type feat MUST be used when a commit adds a new feature to your
-     application or library.
-  3. The type fix MUST be used when a commit represents a bug fix for your
-     application.
-  4. A scope MAY be provided after a type. A scope MUST consist of a noun
-     describing a section of the codebase surrounded by parenthesis, e.g., fix
-     parser):
-  5. A description MUST immediately follow the colon and space after the type
-     scope prefix. The description is a short summary of the code changes, e.
-     ., fix: array parsing issue when multiple spaces were contained in string.
-  6. A longer commit body MAY be provided after the short description,
-     providing additional contextual information about the code changes. The
-     body MUST begin one blank line after the description.
-  7. A commit body is free-form and MAY consist of any number of newline
-     separated paragraphs.
-  8. One or more footers MAY be provided one blank line after the body. Each
-     footer MUST consist of a word token, followed by either a :<space> or
-     space># separator, followed by a string value (this is inspired by the
-     git trailer convention).
-  9. A footer’s token MUST use - in place of whitespace characters, e.g., Acke
-     -by (this helps differentiate the footer section from a multi-paragraph
-     body). An exception is made for BREAKING CHANGE, which MAY also be used
-     as a token.
+  1.  Commits MUST be prefixed with a type, which consists of a noun, feat,
+      fix, etc., followed by the OPTIONAL scope, OPTIONAL !, and REQUIRED
+      terminal colon and space.
+  2.  The type feat MUST be used when a commit adds a new feature to your
+      application or library.
+  3.  The type fix MUST be used when a commit represents a bug fix for your
+      application.
+  4.  A scope MAY be provided after a type. A scope MUST consist of a noun
+      describing a section of the codebase surrounded by parenthesis, e.g., fix
+      parser):
+  5.  A description MUST immediately follow the colon and space after the type
+      scope prefix. The description is a short summary of the code changes,
+      e.g, fix: array parsing issue when multiple spaces were contained in
+      string.
+  6.  A longer commit body MAY be provided after the short description,
+      providing additional contextual information about the code changes. The
+      body MUST begin one blank line after the description.
+  7.  A commit body is free-form and MAY consist of any number of newline
+      separated paragraphs.
+  8.  One or more footers MAY be provided one blank line after the body. Each
+      footer MUST consist of a word token, followed by either a :<space> or
+      space># separator, followed by a string value (this is inspired by the
+      git trailer convention).
+  9.  A footer’s token MUST use - in place of whitespace characters, e.g.,
+      Acked-by (this helps differentiate the footer section from a
+      multi-paragraph body). An exception is made for BREAKING CHANGE, which
+      MAY also be used as a token.
   10. A footer’s value MAY contain spaces and newlines, and parsing MUST
-     terminate when the next valid footer token/separator pair is observed.
+      terminate when the next valid footer token/separator pair is observed.
   11. Breaking changes MUST be indicated in the type/scope prefix of a commit,
-     or as an entry in the footer.
-  11. If included as a footer, a breaking change MUST consist of the uppercase
-     text BREAKING CHANGE, followed by a colon, space, and description, e.g.,
-     BREAKING CHANGE: environment variables now take precedence over config
-     files.
-  12. If included in the type/scope prefix, breaking changes MUST be indicated
-     by a ! immediately before the :. If ! is used, BREAKING CHANGE: MAY be
-     omitted from the footer section, and the commit description SHALL be used
-     to describe the breaking change.
-  13. Types other than feat and fix MAY be used in your commit messages, e.g.,
-     docs: update ref docs.
-  14. The units of information that make up Conventional Commits MUST NOT be
-     treated as case-sensitive by implementors, with the exception of BREAKING
-     CHANGE which MUST be uppercase.
-  15. BREAKING-CHANGE MUST be synonymous with BREAKING CHANGE, when used as a
-     token in a footer.
+      or as an entry in the footer.
+  12. If included as a footer, a breaking change MUST consist of the uppercase
+      text BREAKING CHANGE, followed by a colon, space, and description, e.g.,
+      BREAKING CHANGE: environment variables now take precedence over config
+      files.
+  13. If included in the type/scope prefix, breaking changes MUST be indicated
+      by a ! immediately before the :. If ! is used, BREAKING CHANGE: MAY be
+      omitted from the footer section, and the commit description SHALL be used
+      to describe the breaking change.
+  14. Types other than feat and fix MAY be used in your commit messages, e.g.,
+      docs: update ref docs.
+  15. The units of information that make up Conventional Commits MUST NOT be
+      treated as case-sensitive by implementors, with the exception of BREAKING
+      CHANGE which MUST be uppercase.
+  16. BREAKING-CHANGE MUST be synonymous with BREAKING CHANGE, when used as a
+      token in a footer.
 
 Commit subject length should be 50 characters if possible, and the column width
 limit for the commit describption is 80 characters, if it does reach 80
