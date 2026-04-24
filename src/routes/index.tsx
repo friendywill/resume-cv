@@ -1,14 +1,25 @@
-import { createFileRoute } from '@tanstack/react-router'
+import { createFileRoute } from "@tanstack/react-router";
+import { marked } from "marked";
+import { CvHeader } from "#/components/cv/CvHeader";
+import resumeRaw from "../../RESUME.md?raw";
 
-export const Route = createFileRoute('/')({ component: Home })
+const bodyMarkdown = resumeRaw.replace(/^#[^\n]*\n/, "").trimStart();
+const bodyHtml = marked.parse(bodyMarkdown) as string;
 
-function Home() {
-  return (
-    <div className="p-8">
-      <h1 className="text-4xl font-bold">Welcome to TanStack Start</h1>
-      <p className="mt-4 text-lg">
-        Edit <code>src/routes/index.tsx</code> to get started.
-      </p>
-    </div>
-  )
+export const Route = createFileRoute("/")({
+	component: CvPage,
+});
+
+function CvPage() {
+	return (
+		<div style={{ minHeight: "100vh", backgroundColor: "var(--color-bg)" }}>
+			<CvHeader />
+			<main className="mx-auto max-w-3xl px-6 pb-16 pt-10">
+				<article
+					className="prose prose-slate dark:prose-invert max-w-none"
+					dangerouslySetInnerHTML={{ __html: bodyHtml }}
+				/>
+			</main>
+		</div>
+	);
 }
