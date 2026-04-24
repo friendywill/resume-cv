@@ -32,14 +32,11 @@ This project uses [Tailwind CSS](https://tailwindcss.com/) for styling.
 This project uses [Biome](https://biomejs.dev/) for linting and formatting. The following scripts are
 available:
 
-
 ```bash
 bun --bun run lint
 bun --bun run format
 bun --bun run check
 ```
-
-
 
 ## Routing
 
