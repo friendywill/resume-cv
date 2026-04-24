@@ -1,15 +1,13 @@
-Welcome to your new TanStack Start app! 
+# Resume / CV William Friend
 
-# Getting Started
-
-To run this application:
+## Getting Started
 
 ```bash
 bun install
 bun --bun run dev
 ```
 
-# Building For Production
+## Building For Production
 
 To build this application for production:
 
@@ -29,18 +27,10 @@ bun --bun run test
 
 This project uses [Tailwind CSS](https://tailwindcss.com/) for styling.
 
-### Removing Tailwind CSS
-
-If you prefer not to use Tailwind CSS:
-
-1. Remove the demo pages in `src/routes/demo/`
-2. Replace the Tailwind import in `src/styles.css` with your own styles
-3. Remove `tailwindcss()` from the plugins array in `vite.config.ts`
-4. Uninstall the packages: `bun install @tailwindcss/vite tailwindcss -D`
-
 ## Linting & Formatting
 
-This project uses [Biome](https://biomejs.dev/) for linting and formatting. The following scripts are available:
+This project uses [Biome](https://biomejs.dev/) for linting and formatting. The following scripts are
+available:
 
 
 ```bash
@@ -53,7 +43,8 @@ bun --bun run check
 
 ## Routing
 
-This project uses [TanStack Router](https://tanstack.com/router) with file-based routing. Routes are managed as files in `src/routes`.
+This project uses [TanStack Router](https://tanstack.com/router) with file-based routing. Routes are managed
+as files in `src/routes`.
 
 ### Adding A Route
 
@@ -193,11 +184,11 @@ function PeopleComponent() {
 
 Loaders simplify your data fetching logic dramatically. Check out more information in the [Loader documentation](https://tanstack.com/router/latest/docs/framework/react/guide/data-loading#loader-parameters).
 
-# Demo files
+## Demo files
 
 Files prefixed with `demo` can be safely deleted. They are there to provide a starting point for you to play around with the features you've installed.
 
-# Learn More
+## Learn More
 
 You can learn more about all of the offerings from TanStack in the [TanStack documentation](https://tanstack.com).
 
