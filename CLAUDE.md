@@ -450,6 +450,13 @@ characters, a new line must be created to continue the description.
 
 ---
 
+## Record all prompts
+
+All prompts to Claude, and responses by Claude, should be recorded in a
+CLAUDE-HISTORY.md file.
+
+---
+
 ## What Not To Do
 
 - Do not add dependencies without checking bundle impact first.
