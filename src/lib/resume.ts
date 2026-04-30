@@ -13,8 +13,8 @@ export const resumeTitle =
 
 export const contactLinks: ContactLink[] = [
 	{
-		label: "friendywill@gmail.com",
-		href: "mailto:friendywill@gmail.com",
+		label: "will@friendy.dev",
+		href: "mailto:will@friendy.dev",
 		Icon: Mail,
 	},
 	{
